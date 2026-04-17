@@ -1,0 +1,24 @@
+# Real trade data — never push
+data/trades_export.csv
+data/*export*.csv
+data/*real*.csv
+!data/sample_trades.csv
+
+# Journal entries (personal notes)
+journal_entries/journal.csv
+
+# Generated output
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.env
+
+# OS
+.DS_Store
+Thumbs.db

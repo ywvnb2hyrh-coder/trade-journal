@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test & type-check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy plotly pytest pytest-cov mypy pandas-stubs
+
+      - name: Run mypy
+        run: mypy src/trade_journal --config-file mypy.ini
+
+      - name: Run tests with coverage
+        run: |
+          PYTHONPATH=src pytest tests/ -v --cov=src/trade_journal --cov-report=term-missing
+
+      - name: Require 80% coverage
+        run: |
+          PYTHONPATH=src pytest tests/ --cov=src/trade_journal --cov-fail-under=80 -q
